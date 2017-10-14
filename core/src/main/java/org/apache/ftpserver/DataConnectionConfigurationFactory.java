@@ -39,13 +39,14 @@ public class DataConnectionConfigurationFactory {
     private Logger log = LoggerFactory.getLogger(DataConnectionConfigurationFactory.class);
     
     // maximum idle time in seconds
-    private int idleTime = 300;
+    private int idleTime = 240;  //Reducing wait time to prevent loopback
     private SslConfiguration ssl;
 
     private boolean activeEnabled = true;
     private String activeLocalAddress;
     private int activeLocalPort = 0;
     private boolean activeIpCheck = false;
+
     
     private String passiveAddress;
     private String passiveExternalAddress;
@@ -286,9 +287,18 @@ public class DataConnectionConfigurationFactory {
      * @param port The port to release
      */
     public synchronized void releasePassivePort(final int port) {
+    	try {
         passivePorts.releasePort(port);
-
+        
         notify();
+    	}
+    	catch(Exception e)
+    	{
+    		System.out.println("Unexpected error occured");
+    	}
+    	finally {
+    		passivePorts.releasePort(port);  //Ensuring that port gets released in case of an error
+    	}
     }
 
     /**

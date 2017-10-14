@@ -39,6 +39,7 @@ public class EmbeddingFtpServer {
         
         // set the port of the listener
         factory.setPort(2221);
+        
 
         // define SSL configuration
         SslConfigurationFactory ssl = new SslConfigurationFactory();
